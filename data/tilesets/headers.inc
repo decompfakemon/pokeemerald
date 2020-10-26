@@ -840,4 +840,4 @@ gTileset_Forest::
 	.4byte gTilesetPalettes_Forest
 	.4byte gMetatiles_Forest
 	.4byte gMetatileAttributes_Forest
-	.4byte NULL
+	.4byte InitTilesetAnim_Forest

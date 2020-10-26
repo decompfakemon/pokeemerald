@@ -73,6 +73,55 @@ static void QueueAnimTiles_MauvilleGym_ElectricGates(u16);
 static void QueueAnimTiles_SootopolisGym_Waterfalls(u16);
 static void QueueAnimTiles_EliteFour_GroundLights(u16);
 static void QueueAnimTiles_EliteFour_WallLights(u16);
+static void AppendTilesetAnimToBuffer(const u16 *src, u16 *dest, u16 size);
+static void TilesetAnim_Forest(u16 timer);
+static void QueueAnimTiles_Forest_Waterfall(u16 timer);
+
+//INICIO ANIMACIÓN DE CASCADA
+//Asignamos la dirección de los frames a constantes.
+const u16 gTilesetAnims_Forest_Waterfall_Frame0[] = INCBIN_U16("data/tilesets/primary/forest/anim/Waterfall/Waterfall_0.4bpp");
+const u16 gTilesetAnims_Forest_Waterfall_Frame1[] = INCBIN_U16("data/tilesets/primary/forest/anim/Waterfall/Waterfall_1.4bpp");
+const u16 gTilesetAnims_Forest_Waterfall_Frame2[] = INCBIN_U16("data/tilesets/primary/forest/anim/Waterfall/Waterfall_2.4bpp");
+const u16 gTilesetAnims_Forest_Waterfall_Frame3[] = INCBIN_U16("data/tilesets/primary/forest/anim/Waterfall/Waterfall_3.4bpp");
+const u16 gTilesetAnims_Forest_Waterfall_Frame4[] = INCBIN_U16("data/tilesets/primary/forest/anim/Waterfall/Waterfall_4.4bpp");
+
+const u16 *const gTilesetAnims_Forest_Waterfall[] = {
+    gTilesetAnims_Forest_Waterfall_Frame0,
+    gTilesetAnims_Forest_Waterfall_Frame1,
+    gTilesetAnims_Forest_Waterfall_Frame2,
+    gTilesetAnims_Forest_Waterfall_Frame3,
+    gTilesetAnims_Forest_Waterfall_Frame4
+};
+
+void InitTilesetAnim_Forest(void) {
+    //Este es el método al que llama el fichero headers.in ubicado en data/tilesets/
+    sPrimaryTilesetAnimCounter = 0;
+    sPrimaryTilesetAnimCounterMax = 255;
+    sPrimaryTilesetAnimCallback = TilesetAnim_Forest;
+}
+
+static void TilesetAnim_Forest(u16 timer) {
+    //El numero que viene a continuación del % es la velocidad de la animación
+    //Este siempre deberá ser múltiplo de 2
+    if(timer %  16 == 0)
+        //El cuatro representa el número de veces al que hemos elevado 2 para llegar al número de arriba, en este caso 16
+        //16 es 2 a la cuarta 2*2*2*2
+        QueueAnimTiles_Forest_Waterfall(timer >> 4);
+}
+
+static void QueueAnimTiles_Forest_Waterfall(u16 timer) {
+    u16 i = timer % 5;
+    
+    //gTilesetAnims_Forest_Waterfall[i] representa el nombre de nuestros frames.
+    //Siendo i un "iterador" que irá de 0 a 4. No es un iterador, pero actua como tal en este caso.
+    //BG_VRAM representa la posición inicial de video.
+    //TILE_OFFSET_4BPP(0x288) representa el punto hasta el que debe avanzar para tratar la animación.
+    //Siendo el 0x240 el tamaño de la animación.
+
+    AppendTilesetAnimToBuffer(gTilesetAnims_Forest_Waterfall[i], (u16*)(BG_VRAM + TILE_OFFSET_4BPP(0x288)), 0x240);
+}
+
+//FIN ANIMACIÓN CASCADA
 
 const u16 gTilesetAnims_General_Flower_Frame1[] = INCBIN_U16("data/tilesets/primary/general/anim/flower/1.4bpp");
 const u16 gTilesetAnims_General_Flower_Frame0[] = INCBIN_U16("data/tilesets/primary/general/anim/flower/0.4bpp");
